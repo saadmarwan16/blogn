@@ -3,9 +3,9 @@ import {
   ChangeEvent,
   FormEvent,
   FunctionComponent,
-  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { auth, authProvider, firestore } from "../lib/firebase";
@@ -56,12 +56,11 @@ const UsernameForm: FunctionComponent = () => {
 
   const { user, username } = useContext(UserContext);
 
-  const checkUsername = useCallback(
-    debounce(async (username: string) => {
+  const checkUsername = useMemo(
+    () => debounce(async (username: string) => {
       if (username.length >= 3) {
         const ref = await getDoc(doc(firestore, `usernames/${username}`));
-        console.log("Firestore read executed");
-        setIsValid(!ref.exists);
+        setIsValid(!ref.exists());
         setLoading(false);
       }
     }, 500),
@@ -77,7 +76,7 @@ const UsernameForm: FunctionComponent = () => {
     const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
     setFormValue(val);
 
-    if (val.length) {
+    if (val.length < 3) {
       setIsValid(false);
       setLoading(false);
     }
@@ -90,7 +89,6 @@ const UsernameForm: FunctionComponent = () => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('submitted');
     const userDoc = doc(firestore, `users/${user?.uid}`);
     const usernameDoc = doc(firestore, `usernames/${formValue}`);
     const batch = writeBatch(firestore);
@@ -120,7 +118,7 @@ const UsernameForm: FunctionComponent = () => {
               isValid={isValid}
               loading={loading}
             />
-            <button type="submit" disabled={isValid} className="btn-green">
+            <button type="submit" disabled={!isValid} className="btn-green">
               Choose
             </button>
 
@@ -148,10 +146,6 @@ const UsernameMessage = ({
   isValid: boolean;
   loading: boolean;
 }) => {
-  console.log(username);
-  console.log(isValid);
-  console.log(loading);
-
   if (loading) {
     return <p>Checking...</p>;
   } else if (isValid) {
