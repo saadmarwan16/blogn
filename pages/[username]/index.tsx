@@ -30,9 +30,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (userDoc) {
     user = userDoc.data();
     const userRef = userDoc.ref;
-    const postsRef = collection(firestore, 'posts');
+    const postsRef = collection(userRef, 'posts');
     const q = query(postsRef, where('published', '==', true), limit(1), orderBy('createdAt', 'desc'));
-    getDocs(q);
+    (await getDocs(q)).docs.map(postToJson);
   }
 
   return {

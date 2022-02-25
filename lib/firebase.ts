@@ -25,3 +25,13 @@ export const getUserWithUsername = async (username: username) => {
   const userDoc = (await getDocs(q)).docs[0]
   return userDoc;
 }
+
+export const postToJson(doc) => {
+  const data = doc.data();
+
+  return {
+    ...data,
+    createdAt: data.createdAt.toMillis(),
+    updatedAt: data.updatedAt.toMillis(), 
+  }
+}
