@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {getAuth, GoogleAuthProvider} from 'firebase/auth';
-import {collection, getDocs, getFirestore, limit, query, where} from 'firebase/firestore';
+import {collection, DocumentData, getDocs, getFirestore, limit, query, QueryDocumentSnapshot, where} from 'firebase/firestore';
 // import {getStorage} from 'firebase/storage';
 import { username } from "./types";
 
@@ -26,7 +26,7 @@ export const getUserWithUsername = async (username: username) => {
   return userDoc;
 }
 
-export const postToJson(doc) => {
+export const postToJson = (doc: QueryDocumentSnapshot<DocumentData>) => {
   const data = doc.data();
 
   return {

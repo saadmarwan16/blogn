@@ -2,12 +2,12 @@ import { collection, where, query, limit, orderBy, getDocs } from "firebase/fire
 import { GetServerSideProps, NextPage } from "next";
 import PostFeed from "../../components/PostFeed";
 import UserProfile from "../../components/UserProfile";
-import { firestore, getUserWithUsername } from "../../lib/firebase";
-import { user } from "../../lib/types";
+import { getUserWithUsername, postToJson } from "../../lib/firebase";
+import { user, post } from "../../lib/types";
 
 interface Props {
   user: user;
-  posts;
+  posts: post[];
 }
 
 const UserProfilePage: NextPage<Props> = ({user, posts}) => {
@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const userRef = userDoc.ref;
     const postsRef = collection(userRef, 'posts');
     const q = query(postsRef, where('published', '==', true), limit(1), orderBy('createdAt', 'desc'));
-    (await getDocs(q)).docs.map(postToJson);
+    posts = (await getDocs(q)).docs.map(postToJson);
   }
 
   return {
