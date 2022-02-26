@@ -9,7 +9,7 @@ interface UserProfileProps {
 const UserProfile: FunctionComponent<UserProfileProps> = ({ user }) => {
   return (
     <div className="box-center">
-      <Image
+      <img
         alt="profile"
         src={user?.photoURL ? user?.photoURL : "/person.png"}
         className="card-img-center"

@@ -11,6 +11,7 @@ interface Props {
 }
 
 const UserProfilePage: NextPage<Props> = ({user, posts}) => {
+  console.log(posts);
   return (
     <main>
       <UserProfile user={user} />
