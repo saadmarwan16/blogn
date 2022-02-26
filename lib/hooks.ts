@@ -2,7 +2,7 @@ import { collection, onSnapshot, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, firestore } from "./firebase";
-import { username } from "./context";
+import { username } from "./types";
 
 const useUserData = () => {
   const [user] = useAuthState(auth);
