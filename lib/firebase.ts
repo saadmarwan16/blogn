@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {getAuth, GoogleAuthProvider} from 'firebase/auth';
-import {collection, DocumentData, getDocs, getFirestore, limit, query, QueryDocumentSnapshot, where} from 'firebase/firestore';
+import {collection, DocumentData, getDocs, getFirestore, limit, query, QueryDocumentSnapshot, where, Timestamp} from 'firebase/firestore';
+import { IFirestorePost, IPost } from "./interfaces";
 // import {getStorage} from 'firebase/storage';
 import { username } from "./types";
 
@@ -26,12 +27,17 @@ export const getUserWithUsername = async (username: username) => {
   return userDoc;
 }
 
-export const postToJson = (doc: QueryDocumentSnapshot<DocumentData>) => {
-  const data = doc.data();
+export const postToJson = (doc: QueryDocumentSnapshot<DocumentData>): IPost => {
+  const data = doc.data() as IFirestorePost;
+  return JSON.parse(JSON.stringify(data)) as IPost
 
-  return {
-    ...data,
-    createdAt: data.createdAt.toMillis(),
-    updatedAt: data.updatedAt.toMillis(), 
-  }
+  // return {
+  //   ...data,
+  //   createdAt: (data.createdAt.toDate()),
+  // }
 }
+
+// const timeObj = new Timestamp();
+
+// console.log(timeObj instanceof Timestamp)
+// console.log(timeObj.toDate());

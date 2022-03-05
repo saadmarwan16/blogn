@@ -260,3 +260,10 @@ input[type="file"] {
 }
 
 .hidden { display:  none; }
+
+.main-404 {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+}

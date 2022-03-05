@@ -11,7 +11,7 @@ const UserProfile: FunctionComponent<UserProfileProps> = ({ user }) => {
     <div className="box-center">
       <img
         alt="profile"
-        src={user?.photoURL ? user?.photoURL : "/person.png"}
+        src={ user?.photoURL ?? "/person.png"}
         className="card-img-center"
       />
       <p>

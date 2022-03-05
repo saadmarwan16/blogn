@@ -3,7 +3,7 @@ import { FunctionComponent, useContext } from "react";
 import { UserContext } from "../lib/context";
 
 const Navbar: FunctionComponent = () => {
-  const {user, username} = useContext(UserContext);
+  const { user, username } = useContext(UserContext);
 
   return (
     <nav className="navbar">
@@ -23,7 +23,7 @@ const Navbar: FunctionComponent = () => {
             </li>
             <li>
               <Link href={`/${username}`} passHref>
-                <img src={user?.photoURL} alt="logo" />
+                <img src={user?.photoURL ?? "/person.png"} alt="logo" />
               </Link>
             </li>
           </>

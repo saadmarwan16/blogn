@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { FunctionComponent } from "react";
+import { IPost } from "../lib/interfaces";
 import { post } from "../lib/types";
 
 interface PostFeedProps {
-  posts: post[];
+  posts: IPost[];
   admin?: boolean;
 }
 
@@ -23,7 +24,7 @@ const PostFeed: FunctionComponent<PostFeedProps> = ({
 };
 
 interface PostItemProps {
-  post: post;
+  post: IPost;
   admin: boolean;
 }
 
