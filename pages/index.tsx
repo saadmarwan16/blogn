@@ -9,13 +9,12 @@ import {
 } from "firebase/firestore";
 import type { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
-import { toast } from "react-hot-toast";
 import Loader from "../components/Loader";
 import PostFeed from "../components/PostFeed";
-import { firestore, postToJson } from "../lib/firebase";
-import { fromDate, fromMillis, IPost } from "../lib/interfaces";
+import { firestore, fromMillis, postToJson } from "../lib/firebase";
+import { IPost } from "../lib/interfaces";
 
-const LIMIT = 2;
+const LIMIT = 1;
 
 interface Props {
   posts: IPost[];
@@ -28,31 +27,16 @@ const Home: NextPage<Props> = (props) => {
   const getMorePosts = async () => {
     setLoading(true);
     const last = posts[posts.length - 1];
-
-    // const cursor =
-    //   typeof last.createdAt === "number"
-    //     ? fromMillis(last.createdAt)
-    //     : last.createdAt;
-
     const newPostsSnapshot = await getDocs(
       query(
         collectionGroup(firestore, "posts"),
         where("published", "==", true),
         orderBy("createdAt", "desc"),
-        startAfter(fromDate(last.createdAt)),
+        startAfter(fromMillis(last.createdAt)),
         limit(LIMIT)
       )
     );
-    const newPosts = newPostsSnapshot.docs.map((doc) => doc.data() as IPost);
-
-    // const query = firestore
-    //   .collectionGroup('posts')
-    //   .where('published', '==', true)
-    //   .orderBy('createdAt', 'desc')
-    //   .startAfter(cursor)
-    //   .limit(LIMIT);
-
-    // const newPosts = (await query.get()).docs.map((doc) => doc.data());
+    const newPosts = newPostsSnapshot.docs.map(postToJson);
 
     setPosts(posts.concat(newPosts));
     setLoading(false);
@@ -77,17 +61,15 @@ const Home: NextPage<Props> = (props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const colRef = collectionGroup(firestore, "posts");
   const q = query(
     colRef,
-    where("published", "==", false),
+    where("published", "==", true),
     orderBy("createdAt", "desc"),
     limit(LIMIT)
   );
-  console.log((await getDocs(q)).docs);
   const posts = (await getDocs(q)).docs.map(postToJson);
-  console.log(posts);
 
   return {
     props: { posts },

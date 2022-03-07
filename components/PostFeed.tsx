@@ -31,7 +31,6 @@ interface PostItemProps {
 const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
-  console.log(post);
 
   return (
     <div className="card">
@@ -42,16 +41,16 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
       </Link>
 
       <Link href={`/${post.username}/${post.slug}`}>
-        <h2>
-          <a>{post.title}</a>
-        </h2>
+        <a>
+          <h2>{post.title}</h2>
+        </a>
       </Link>
 
       <footer>
         <span>
-          {wordCount} words. {minutesToRead} to read
+          {wordCount} words. {minutesToRead} min read
         </span>
-        <span>{post.heartCount} Hearts</span>
+        <span className="push-left">💗 {post.heartCount} Hearts</span>
       </footer>
     </div>
   );

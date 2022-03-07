@@ -8,21 +8,18 @@ export interface IFirestorePost {
     slug: string;
     title: string;
     uid: string;
-    // updatedAt: Timestamp;
+    updatedAt: Timestamp;
     username: string;
 }
 
 export interface IPost {
     content: string;
-    createdAt: Date;
+    createdAt: number;
     heartCount: number;
     published: boolean;
     slug: string;
     title: string;
     uid: string;
-    // updatedAt: string;
+    updatedAt: number;
     username: string;
 }
-
-export const fromDate = Timestamp.fromDate;
-export const fromMillis = Timestamp.fromMillis;

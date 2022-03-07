@@ -1,7 +1,12 @@
 import { NextPage } from "next";
+import AuthCheck from "../../components/AuthCheck";
 
 const AdminPage: NextPage = () => {
-  return <h1>Admin Page</h1>;
+  return (
+    <main>
+      <AuthCheck></AuthCheck>
+    </main>
+  );
 };
 
 export default AdminPage;
