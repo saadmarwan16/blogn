@@ -5,6 +5,11 @@ import { firestore, getUserWithUsername, postToJson } from "../../lib/firebase";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { collectionGroup, doc, getDoc, getDocs } from "firebase/firestore";
 import { IFirestorePost, IPost } from "../../lib/interfaces";
+import AuthCheck from "../../components/AuthCheck";
+import Link from "next/link";
+import HeartButton from "../../components/HeartButton";
+import { useContext } from "react";
+import { UserContext } from "../../lib/context";
 
 interface PageProps {
   post: IPost;
@@ -13,11 +18,10 @@ interface PageProps {
 
 const PostPage: NextPage<PageProps> = (props) => {
   const postRef = doc(firestore, props.path!);
-  // const postRef = firestore.doc(props.path);
   const [realtimePost] = useDocumentData(postRef);
+  const { user: currentUser } = useContext(UserContext);
 
   const post = (realtimePost || props.post) as IPost;
-  console.log(post);
 
   return (
     <main className={styles.container}>
@@ -29,6 +33,24 @@ const PostPage: NextPage<PageProps> = (props) => {
         <p>
           <strong>{post.heartCount || 0} 🤍</strong>
         </p>
+        <AuthCheck
+          fallback={
+            <Link href="/enter">
+              <a>
+                <button>💗 Sign Up</button>
+              </a>
+            </Link>
+          }
+        >
+          <HeartButton postRef={postRef} />
+        </AuthCheck>
+        {currentUser?.uid === post.uid && (
+          <Link href={`/admin/${post.slug}`}>
+            <a>
+              <button className="btn-blue">Edit Post</button>
+            </a>
+          </Link>
+        )}
       </aside>
     </main>
   );

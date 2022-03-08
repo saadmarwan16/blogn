@@ -7,11 +7,13 @@ import {
   getFirestore,
   limit,
   query,
-  QueryDocumentSnapshot,
   where,
   Timestamp,
   DocumentSnapshot,
+  serverTimestamp as firebaseServerTimestamp,
+  increment as firebaseIncrement
 } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { IFirestorePost, IPost } from "./interfaces";
 import { username } from "./types";
 
@@ -28,6 +30,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const authProvider = new GoogleAuthProvider();
 export const firestore = getFirestore(app);
+export const storage = getStorage(app);
 
 export const getUserWithUsername = async (username: username) => {
   const usersRef = collection(firestore, "users");
@@ -46,8 +49,6 @@ export const postToJson = (doc: DocumentSnapshot<DocumentData>): IPost => {
   };
 };
 
-const timeObj = new Timestamp(199373892, 0);
-timeObj.seconds
-timeObj.toMillis
-
 export const fromMillis = Timestamp.fromMillis;
+export const serverTimestamp = firebaseServerTimestamp;
+export const increment = firebaseIncrement
