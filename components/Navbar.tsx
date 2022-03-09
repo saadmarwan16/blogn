@@ -1,3 +1,4 @@
+import { Avatar, Heading, Text, HStack, VStack, Box, Divider } from "@chakra-ui/react";
 import Link from "next/link";
 import { FunctionComponent, useContext } from "react";
 import { UserContext } from "../lib/context";
@@ -6,38 +7,46 @@ const Navbar: FunctionComponent = () => {
   const { user, username } = useContext(UserContext);
 
   return (
-    <nav className="navbar">
-      <ul>
-        <li>
-          <Link href="/" passHref>
-            <button className="btn-logo">FEED</button>
+    <Box as="nav">
+      <VStack alignItems='normal' gap={8}>
+        <HStack justifyContent="space-between">
+          <Link href="/">
+            <a>
+              <HStack
+                _hover={{ border: "1px", borderColor: "secondary.500" }}
+                h={16}
+                px={2}
+              >
+                <Avatar src="/logo.png" />
+                <Heading>Blogn</Heading>
+              </HStack>
+            </a>
           </Link>
-        </li>
-
-        {username && (
-          <>
-            <li className="push-left">
-              <Link href="/admin" passHref>
-                <button className="btn-blue">Write Posts</button>
-              </Link>
-            </li>
-            <li>
-              <Link href={`/${username}`} passHref>
-                <img src={user?.photoURL ?? "/person.png"} alt="logo" />
-              </Link>
-            </li>
-          </>
-        )}
-
-        {!username && (
-          <li>
-            <Link href="/enter" passHref>
-              <button className="btn-blue">Log in</button>
+          {user && username ? (
+            <Link href={`/${username}`}>
+              <a>
+                <HStack
+                  _hover={{ border: "1px", borderColor: "secondary.500" }}
+                  h={16}
+                  px={2}
+                >
+                  <Avatar src={user.photoURL ?? "/person.png"} />
+                  <VStack gap={0} spacing={0} alignItems="start">
+                    <Text fontWeight="bold" lineHeight={0.75}>
+                      Hi {user.displayName ? `, ${user.displayName}` : ""}
+                    </Text>
+                    <Text>How&apos;s your day?</Text>
+                  </VStack>
+                </HStack>
+              </a>
             </Link>
-          </li>
-        )}
-      </ul>
-    </nav>
+          ) : (
+            <Box></Box>
+          )}
+        </HStack>
+        <Divider height={0.25} bg='secondary.500' />
+      </VStack>
+    </Box>
   );
 };
 

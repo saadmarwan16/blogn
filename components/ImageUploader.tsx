@@ -1,4 +1,4 @@
-import { ChangeEvent, FunctionComponent } from "react";
+import { ChangeEvent, FormEvent, FunctionComponent } from "react";
 import { useState } from "react";
 import { auth, storage } from "../lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";

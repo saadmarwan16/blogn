@@ -1,8 +1,10 @@
 import { collection, where, query, limit, orderBy, getDocs } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
 import { GetServerSideProps, NextPage } from "next";
+import { useEffect, useState } from "react";
 import PostFeed from "../../components/PostFeed";
 import UserProfile from "../../components/UserProfile";
-import { getUserWithUsername, postToJson } from "../../lib/firebase";
+import { getUserWithUsername, postToJson, storage } from "../../lib/firebase";
 import { IPost } from "../../lib/interfaces";
 import { user, post } from "../../lib/types";
 
@@ -12,7 +14,6 @@ interface Props {
 }
 
 const UserProfilePage: NextPage<Props> = ({user, posts}) => {
-  console.log(posts);
   return (
     <main>
       <UserProfile user={user} />
@@ -20,6 +21,18 @@ const UserProfilePage: NextPage<Props> = ({user, posts}) => {
     </main>
   );
 };
+
+// const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+//   useEffect(() => {
+//     getDownloadURL(ref(
+//       storage,
+//       'uploads/XbdhANUQxHUcuaJnSMYivrC9g3W2/1646730495629.png'
+//     )).then((url) => setDownloadUrl(url));
+//     }, [user?.uid]);
+
+// {downloadUrl && (
+//   <img src={downloadUrl} />
+// )}
 
 // export async function getServerSideProps({ query }) {
 //   const { username } = query;

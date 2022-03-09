@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import {
   collectionGroup,
   getDocs,
@@ -47,7 +48,7 @@ const Home: NextPage<Props> = (props) => {
   };
 
   return (
-    <main>
+    <Box as='main' mt={10}>
       <PostFeed posts={posts} />
 
       {!loading && !postsEnd && (
@@ -57,7 +58,7 @@ const Home: NextPage<Props> = (props) => {
       <Loader show={loading} />
 
       {postsEnd && "You have reached the end!"}
-    </main>
+    </Box>
   );
 };
 
