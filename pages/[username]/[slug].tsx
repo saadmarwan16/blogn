@@ -10,6 +10,7 @@ import Link from "next/link";
 import HeartButton from "../../components/HeartButton";
 import { useContext } from "react";
 import { UserContext } from "../../lib/context";
+import Metatags from "../../components/Metatags";
 
 interface PageProps {
   post: IPost;
@@ -24,35 +25,38 @@ const PostPage: NextPage<PageProps> = (props) => {
   const post = (realtimePost || props.post) as IPost;
 
   return (
-    <main className={styles.container}>
-      <section>
-        <PostContent post={post} />
-      </section>
+    <>
+      <Metatags title={currentUser?.displayName!} />
+      <main className={styles.container}>
+        <section>
+          <PostContent post={post} />
+        </section>
 
-      <aside className="card">
-        <p>
-          <strong>{post.heartCount || 0} 🤍</strong>
-        </p>
-        <AuthCheck
-          fallback={
-            <Link href="/enter">
+        <aside className="card">
+          <p>
+            <strong>{post.heartCount || 0} 🤍</strong>
+          </p>
+          <AuthCheck
+            fallback={
+              <Link href="/enter">
+                <a>
+                  <button>💗 Sign Up</button>
+                </a>
+              </Link>
+            }
+          >
+            <HeartButton postRef={postRef} />
+          </AuthCheck>
+          {currentUser?.uid === post.uid && (
+            <Link href={`/admin/${post.slug}`}>
               <a>
-                <button>💗 Sign Up</button>
+                <button className="btn-blue">Edit Post</button>
               </a>
             </Link>
-          }
-        >
-          <HeartButton postRef={postRef} />
-        </AuthCheck>
-        {currentUser?.uid === post.uid && (
-          <Link href={`/admin/${post.slug}`}>
-            <a>
-              <button className="btn-blue">Edit Post</button>
-            </a>
-          </Link>
-        )}
-      </aside>
-    </main>
+          )}
+        </aside>
+      </main>
+    </>
   );
 };
 
@@ -74,7 +78,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     );
     const finalDoc = await getDoc(postRef);
     post = postToJson(finalDoc);
-    console.log(post);
 
     path = postRef.path;
   }

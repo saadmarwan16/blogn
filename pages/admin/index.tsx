@@ -11,6 +11,7 @@ import kebabCase from "lodash.kebabcase";
 import toast from "react-hot-toast";
 import { collection, doc, orderBy, query, setDoc } from "firebase/firestore";
 import { IPost } from "../../lib/interfaces";
+import Metatags from "../../components/Metatags";
 
 const AdminPage: NextPage = () => {
   return (
@@ -32,6 +33,7 @@ const PostList = () => {
 
   return (
     <>
+      <Metatags title="Admin" />
       <h1>Manage your Posts</h1>
       <PostFeed posts={posts} admin />
     </>
@@ -50,7 +52,7 @@ const CreateNewPost = () => {
     e.preventDefault();
     const uid = auth.currentUser?.uid!;
     const userRef = doc(firestore, "users", uid);
-    const postRef = doc(userRef, 'posts', slug);
+    const postRef = doc(userRef, "posts", slug);
 
     const data = {
       title,

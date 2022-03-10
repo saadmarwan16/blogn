@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import {
   collectionGroup,
   getDocs,
@@ -11,7 +11,9 @@ import {
 import type { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
 import Loader from "../components/Loader";
+import Metatags from "../components/Metatags";
 import PostFeed from "../components/PostFeed";
+import Profiles from "../components/Profiles";
 import { firestore, fromMillis, postToJson } from "../lib/firebase";
 import { IPost } from "../lib/interfaces";
 
@@ -48,17 +50,24 @@ const Home: NextPage<Props> = (props) => {
   };
 
   return (
-    <Box as='main' mt={10}>
-      <PostFeed posts={posts} />
+    <>
+      <Metatags title="Home" />
+      <Box as="main" mt={{ base: 4, sm: 8 }}>
+        <Heading mb={{ base: 3, md: 6 }}>
+          Let&apos;s explore today&apos;s
+        </Heading>
+        <Profiles />
+        <PostFeed posts={posts} />
 
-      {!loading && !postsEnd && (
-        <button onClick={getMorePosts}>Load more</button>
-      )}
+        {!loading && !postsEnd && (
+          <button onClick={getMorePosts}>Load more</button>
+        )}
 
-      <Loader show={loading} />
+        <Loader show={loading} />
 
-      {postsEnd && "You have reached the end!"}
-    </Box>
+        {postsEnd && "You have reached the end!"}
+      </Box>
+    </>
   );
 };
 

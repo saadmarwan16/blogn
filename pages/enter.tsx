@@ -13,6 +13,7 @@ import { signInWithPopup, signOut } from "firebase/auth";
 import { UserContext } from "../lib/context";
 import { getDoc, doc, writeBatch } from "firebase/firestore";
 import debounce from "lodash.debounce";
+import Metatags from "../components/Metatags";
 
 const EnterPage: NextPage = () => {
   const { user, username } = useContext(UserContext);
@@ -57,13 +58,14 @@ const UsernameForm: FunctionComponent = () => {
   const { user, username } = useContext(UserContext);
 
   const checkUsername = useMemo(
-    () => debounce(async (username: string) => {
-      if (username.length >= 3) {
-        const ref = await getDoc(doc(firestore, `usernames/${username}`));
-        setIsValid(!ref.exists());
-        setLoading(false);
-      }
-    }, 500),
+    () =>
+      debounce(async (username: string) => {
+        if (username.length >= 3) {
+          const ref = await getDoc(doc(firestore, `usernames/${username}`));
+          setIsValid(!ref.exists());
+          setLoading(false);
+        }
+      }, 500),
     []
   );
 
@@ -103,6 +105,7 @@ const UsernameForm: FunctionComponent = () => {
 
   return (
     <>
+      <Metatags title="Enter" />
       {!username && (
         <section>
           <h3>Choose Username</h3>

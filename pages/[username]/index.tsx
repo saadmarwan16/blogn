@@ -1,7 +1,15 @@
-import { collection, where, query, limit, orderBy, getDocs } from "firebase/firestore";
+import {
+  collection,
+  where,
+  query,
+  limit,
+  orderBy,
+  getDocs,
+} from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
+import Metatags from "../../components/Metatags";
 import PostFeed from "../../components/PostFeed";
 import UserProfile from "../../components/UserProfile";
 import { getUserWithUsername, postToJson, storage } from "../../lib/firebase";
@@ -13,12 +21,15 @@ interface Props {
   posts: IPost[];
 }
 
-const UserProfilePage: NextPage<Props> = ({user, posts}) => {
+const UserProfilePage: NextPage<Props> = ({ user, posts }) => {
   return (
-    <main>
-      <UserProfile user={user} />
-      <PostFeed posts={posts} />
-    </main>
+    <>
+      <Metatags title={user?.displayName!} />
+      <main>
+        <UserProfile user={user} />
+        <PostFeed posts={posts} />
+      </main>
+    </>
   );
 };
 
@@ -47,8 +58,7 @@ const UserProfilePage: NextPage<Props> = ({user, posts}) => {
 // }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const {username} = context.query;
-  console.log(username);
+  const { username } = context.query;
   const userDoc = await getUserWithUsername(username as string);
 
   let user = null;
@@ -57,8 +67,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (userDoc) {
     user = userDoc.data();
     const userRef = userDoc.ref;
-    const postsRef = collection(userRef, 'posts');
-    const q = query(postsRef, where('published', '==', true), limit(1), orderBy('createdAt', 'desc'));
+    const postsRef = collection(userRef, "posts");
+    const q = query(
+      postsRef,
+      where("published", "==", true),
+      limit(1),
+      orderBy("createdAt", "desc")
+    );
     posts = (await getDocs(q)).docs.map(postToJson);
   }
 
@@ -66,7 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       user,
       posts,
-    }
+    },
   };
 };
 

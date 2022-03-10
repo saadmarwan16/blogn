@@ -1,4 +1,13 @@
-import { Avatar, Heading, Text, HStack, VStack, Box, Divider } from "@chakra-ui/react";
+import {
+  Avatar,
+  Heading,
+  Text,
+  HStack,
+  VStack,
+  Box,
+  Divider,
+  Show,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import { FunctionComponent, useContext } from "react";
 import { UserContext } from "../lib/context";
@@ -8,32 +17,32 @@ const Navbar: FunctionComponent = () => {
 
   return (
     <Box as="nav">
-      <VStack alignItems='normal' gap={8}>
-        <HStack justifyContent="space-between">
-          <Link href="/">
-            <a>
-              <HStack
-                _hover={{ border: "1px", borderColor: "secondary.500" }}
-                h={16}
-                px={2}
-              >
-                <Avatar src="/logo.png" />
-                <Heading>Blogn</Heading>
-              </HStack>
-            </a>
-          </Link>
+      <VStack alignItems="normal" gap={{base: 2, sm: 8}}>
+        <HStack justifyContent="space-between" gap={2}>
+          <Show above="sm">
+            <Link href="/">
+              <a>
+                <HStack
+                  _hover={{ border: "1px", borderColor: "primary.600" }}
+                  h={16}
+                >
+                  <Avatar src="/logo.png" />
+                  <Heading>Blogn</Heading>
+                </HStack>
+              </a>
+            </Link>
+          </Show>
           {user && username ? (
             <Link href={`/${username}`}>
               <a>
                 <HStack
-                  _hover={{ border: "1px", borderColor: "secondary.500" }}
+                  _hover={{ border: "1px", borderColor: "primary.600" }}
                   h={16}
-                  px={2}
                 >
                   <Avatar src={user.photoURL ?? "/person.png"} />
                   <VStack gap={0} spacing={0} alignItems="start">
                     <Text fontWeight="bold" lineHeight={0.75}>
-                      Hi {user.displayName ? `, ${user.displayName}` : ""}
+                      Hi {user.displayName ? `, ${user.displayName}!` : ""}
                     </Text>
                     <Text>How&apos;s your day?</Text>
                   </VStack>
@@ -44,7 +53,7 @@ const Navbar: FunctionComponent = () => {
             <Box></Box>
           )}
         </HStack>
-        <Divider height={0.25} bg='secondary.500' />
+        <Divider height={0.25} bg="primary.600" />
       </VStack>
     </Box>
   );

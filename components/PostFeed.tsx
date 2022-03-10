@@ -1,14 +1,19 @@
 import {
   Avatar,
   Box,
-  useBreakpointValue,
   VStack,
   Text,
+  HStack,
+  Heading,
+  Flex,
+  SimpleGrid,
+  GridItem,
+  useBreakpointValue,
 } from "@chakra-ui/react";
+import Image from "next/image";
 import Link from "next/link";
 import { FunctionComponent } from "react";
 import { IPost } from "../lib/interfaces";
-import { post } from "../lib/types";
 
 interface PostFeedProps {
   posts: IPost[];
@@ -20,13 +25,13 @@ const PostFeed: FunctionComponent<PostFeedProps> = ({
   admin = false,
 }) => {
   return (
-    <>
+    <SimpleGrid columns={2} columnGap={6} rowGap={4}>
       {posts
         ? posts.map((post) => (
             <PostItem post={post} key={post.slug} admin={admin} />
           ))
         : null}
-    </>
+    </SimpleGrid>
   );
 };
 
@@ -38,50 +43,64 @@ interface PostItemProps {
 const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
-  const profileSize = useBreakpointValue({ base: "md", md: "lg", lg: "xl" });
+  const colSpan = useBreakpointValue({base: 2, lg: 1})
 
   return (
-    <>
-      <Box>
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+    <GridItem colSpan={colSpan}>
+      <Link href={`/${post.username}/${post.slug}`}>
+        <a>
           <Box
-            key={num}
-            border="1px"
-            borderColor="secondary.500"
-            display="inline-block"
-            borderRadius={10}
-            p={{ base: 1, md: 2 }}
-            mx={2}
+            border="2px"
+            borderColor="primary.600"
+            borderRadius="3xl"
+            p={{ base: 2, md: 3, lg: 2 }}
+            _hover={{ borderColor: "primary.800" }}
           >
-            <VStack>
-              <Box></Box>
-              <Avatar src="/logo.png" borderRadius={10} size={profileSize} />
-              <Text>Marwan</Text>
-            </VStack>
+            <Flex
+              alignItems="center"
+              flexDirection={{ base: "column", sm: "row" }}
+              gap={4}
+            >
+              <Box
+                border="1px"
+                borderColor="primary.600"
+                borderRadius="xl"
+                flexBasis="50%"
+              >
+                <Image
+                  alt="Post image"
+                  src="/no-image.png"
+                  width={200}
+                  height={130}
+                  // layout="responsive"
+                  // layout="intrinsic"
+                />
+              </Box>
+              <VStack alignItems="start" flexBasis="50%">
+                <Heading textAlign="left" as="h6" size="md" noOfLines={2}>
+                  {post.title}
+                </Heading>
+                <Text noOfLines={2}>{post.content}</Text>
+                <HStack>
+                  <Avatar
+                    src="/logo.png"
+                    name="Poster profile"
+                    borderRadius="xl"
+                  />
+                  <VStack alignItems="start">
+                    <Heading lineHeight={0.75} as="h6" size="md">
+                      Marwan Sa-ad
+                    </Heading>
+                    <Text lineHeight={0.75}>July 14, 2021</Text>
+                  </VStack>
+                  {/* <Box>💗 145</Box> */}
+                </HStack>
+              </VStack>
+            </Flex>
           </Box>
-        ))}
-      </Box>
-    </>
-    // <div className="card">
-    //   <Link href={`/${post.username}`}>
-    //     <a>
-    //       <strong>By @{post.username}</strong>
-    //     </a>
-    //   </Link>
-
-    //   <Link href={`/${post.username}/${post.slug}`}>
-    //     <a>
-    //       <h2>{post.title}</h2>
-    //     </a>
-    //   </Link>
-
-    //   <footer>
-    //     <span>
-    //       {wordCount} words. {minutesToRead} min read
-    //     </span>
-    //     <span className="push-left">💗 {post.heartCount} Hearts</span>
-    //   </footer>
-    // </div>
+        </a>
+      </Link>
+    </GridItem>
   );
 };
 

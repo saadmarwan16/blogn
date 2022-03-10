@@ -19,6 +19,7 @@ import {
 } from "firebase/firestore";
 import { IPost } from "../../lib/interfaces";
 import ImageUploader from "../../components/ImageUploader";
+import Metatags from "../../components/Metatags";
 
 const EditPostPage: NextPage = () => {
   return (
@@ -112,45 +113,48 @@ const PostForm: FunctionComponent<Props> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(updatePost)}>
-      {preview && (
-        <div className="card">
-          <ReactMarkdown>{watch("content")}</ReactMarkdown>
-        </div>
-      )}
-
-      <div className={preview ? styles.hidden : styles.controls}>
-        <ImageUploader />
-
-        <textarea
-          {...register("content", {
-            maxLength: { value: 20000, message: "content is too long" },
-            minLength: { value: 10, message: "content is too short" },
-            required: { value: true, message: "content is required" },
-          })}
-        ></textarea>
-        {errors.content && (
-          <p className="text-danger">{errors.content.message}</p>
+    <>
+      <Metatags title="Add Post" />
+      <form onSubmit={handleSubmit(updatePost)}>
+        {preview && (
+          <div className="card">
+            <ReactMarkdown>{watch("content")}</ReactMarkdown>
+          </div>
         )}
 
-        <fieldset>
-          <input
-            className={styles.checkbox}
-            type="checkbox"
-            {...register("published")}
-          />
-          <label>Published</label>
-        </fieldset>
+        <div className={preview ? styles.hidden : styles.controls}>
+          <ImageUploader />
 
-        <button
-          type="submit"
-          className="btn-green"
-          disabled={!isDirty || !isValid}
-        >
-          Save Changes
-        </button>
-      </div>
-    </form>
+          <textarea
+            {...register("content", {
+              maxLength: { value: 20000, message: "content is too long" },
+              minLength: { value: 10, message: "content is too short" },
+              required: { value: true, message: "content is required" },
+            })}
+          ></textarea>
+          {errors.content && (
+            <p className="text-danger">{errors.content.message}</p>
+          )}
+
+          <fieldset>
+            <input
+              className={styles.checkbox}
+              type="checkbox"
+              {...register("published")}
+            />
+            <label>Published</label>
+          </fieldset>
+
+          <button
+            type="submit"
+            className="btn-green"
+            disabled={!isDirty || !isValid}
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
