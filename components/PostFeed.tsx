@@ -72,8 +72,6 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
                   src="/no-image.png"
                   width={200}
                   height={130}
-                  // layout="responsive"
-                  // layout="intrinsic"
                 />
               </Box>
               <VStack alignItems="start" flexBasis="50%">
@@ -88,10 +86,10 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
                     borderRadius="xl"
                   />
                   <VStack alignItems="start">
-                    <Heading lineHeight={0.75} as="h6" size="md">
+                    <Heading lineHeight={0.75} as="h6" size="md" noOfLines={1}>
                       Marwan Sa-ad
                     </Heading>
-                    <Text lineHeight={0.75}>July 14, 2021</Text>
+                    <Text lineHeight={0.75} fontSize='xs'>{wordCount} words. July 14, 2021</Text>
                   </VStack>
                   {/* <Box>💗 145</Box> */}
                 </HStack>
