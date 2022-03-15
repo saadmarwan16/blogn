@@ -1,3 +1,4 @@
+import { Button } from "@chakra-ui/react";
 import {
   collection,
   where,
@@ -8,10 +9,10 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { GetServerSideProps, NextPage } from "next";
-import { useEffect, useState } from "react";
 import Metatags from "../../components/Metatags";
 import PostFeed from "../../components/PostFeed";
 import UserProfile from "../../components/UserProfile";
+import { useAuth } from "../../lib/contexts/AuthContext";
 import { getUserWithUsername, postToJson, storage } from "../../lib/firebase";
 import { IPost } from "../../lib/interfaces";
 import { user, post } from "../../lib/types";
@@ -22,12 +23,17 @@ interface Props {
 }
 
 const UserProfilePage: NextPage<Props> = ({ user, posts }) => {
+  const { signOut } = useAuth();
+
   return (
     <>
       <Metatags title={user?.displayName!} />
       <main>
         <UserProfile user={user} />
         <PostFeed posts={posts} />
+        <Button colorScheme="secondary" onClick={() => signOut()}>
+          Logout
+        </Button>
       </main>
     </>
   );
