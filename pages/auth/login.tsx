@@ -155,7 +155,7 @@ const Login: NextPage<LoginProps> = () => {
                     display="inline-block"
                     color="secondary.500"
                     fontWeight="bold"
-                    _hover={{ fontSize: "17px" }}
+                    _hover={{ color: "secondary.700" }}
                     ml={1}
                     as="a"
                   >
