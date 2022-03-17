@@ -1,19 +1,19 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import Navbar from "../components/Navbar";
 import { Toaster } from "react-hot-toast";
-import { Box, ChakraProvider, VStack } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import theme from "../themes/config";
-import BottomNavbar from "../components/BottomNavbar";
 import AuthContextProvider from "../lib/contexts/AuthContext";
+import Navbar from "../components/Navbar";
+import Header from "../components/Header";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <AuthContextProvider>
-        <Navbar />
+        <Header />
         <Component {...pageProps} />
-        <BottomNavbar />
+        <Navbar />
         <Toaster />
       </AuthContextProvider>
     </ChakraProvider>

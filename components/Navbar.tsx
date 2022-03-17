@@ -1,77 +1,75 @@
-import {
-  Avatar,
-  Heading,
-  Text,
-  HStack,
-  VStack,
-  Box,
-  Divider,
-  Show,
-  Button,
-} from "@chakra-ui/react";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { Box, HStack, Icon, useBreakpointValue } from "@chakra-ui/react";
 import { FunctionComponent } from "react";
+import { AiOutlineHome } from "react-icons/ai";
+import { MdOutlinePersonOutline } from "react-icons/md";
+import { VscAdd } from "react-icons/vsc";
+import { useRouter } from "next/router";
 import { useAuth } from "../lib/contexts/AuthContext";
 import useShowNavbar from "../lib/hooks/showNavbar";
-import Layout from "./Layout";
+import { BsFillBookmarkFill } from "react-icons/bs";
 
-const Navbar: FunctionComponent = () => {
+interface NavbarProps {}
+
+const Navbar: FunctionComponent<NavbarProps> = () => {
+  const iconSize = useBreakpointValue({ base: 5, sm: 6 });
+  const { username } = useAuth();
+  const router = useRouter();
   const showNavbar = useShowNavbar();
-  const { user, username } = useAuth();
 
   return (
     <>
       {showNavbar && (
-        <Layout>
-          <Box as="nav">
-            <VStack alignItems="normal" gap={{ base: 2, sm: 8 }}>
-              <HStack justifyContent="space-between" gap={2}>
-                <Show above="sm">
-                  <Link href="/">
-                    <a>
-                      <HStack
-                        _hover={{ border: "1px", borderColor: "primary.600" }}
-                        h={16}
-                        px={2}
-                      >
-                        <Avatar src="/logo.png" />
-                        <Heading>Blogn</Heading>
-                      </HStack>
-                    </a>
-                  </Link>
-                </Show>
-                {user && username ? (
-                  <Link href={`/${username}`}>
-                    <a>
-                      <HStack
-                        _hover={{ border: "1px", borderColor: "primary.600" }}
-                        h={16}
-                        px={2}
-                      >
-                        <Avatar src={user.photoURL ?? "/person.png"} />
-                        <VStack gap={0} spacing={0} alignItems="start">
-                          <Text fontWeight="bold" lineHeight={0.75}>
-                            Hi{" "}
-                            {user.displayName ? `, ${user.displayName}!` : ""}
-                          </Text>
-                          <Text>How&apos;s your day?</Text>
-                        </VStack>
-                      </HStack>
-                    </a>
-                  </Link>
-                ) : (
-                  <Link href="/auth/login">
-                    <a>
-                      <Button colorScheme="secondary">Login</Button>
-                    </a>
-                  </Link>
-                )}
-              </HStack>
-              <Divider height={0.25} bg="primary.600" />
-            </VStack>
+        <HStack justifyContent="center">
+          <Box
+            as="nav"
+            bg="black"
+            px={{ base: 6, sm: 8 }}
+            py={{ base: 3, sm: 4 }}
+            borderRadius="full"
+            display="inline-block"
+            position="fixed"
+            bottom={{ base: 4, sm: 6 }}
+          >
+            <HStack gap={{ base: 4, sm: 8 }}>
+              <Icon
+                as={AiOutlineHome}
+                w={iconSize}
+                h={iconSize}
+                cursor="pointer"
+                onClick={() => router.push("/")}
+                color={router.asPath === "/" ? "white" : "current"}
+              />
+              <Icon
+                as={VscAdd}
+                w={iconSize}
+                h={iconSize}
+                cursor="pointer"
+                onClick={() => router.push("/admin")}
+                color={router.asPath === "/admin" ? "white" : "current"}
+              />
+              <Icon
+                as={BsFillBookmarkFill}
+                w={iconSize}
+                h={iconSize}
+                cursor="pointer"
+                onClick={() => router.push(`/${username}/saved-posts`)}
+                color={
+                  router.asPath === `/${username}/saved-posts`
+                    ? "white"
+                    : "current"
+                }
+              />
+              <Icon
+                as={MdOutlinePersonOutline}
+                w={iconSize}
+                h={iconSize}
+                cursor="pointer"
+                onClick={() => router.push(`/${username}`)}
+                color={router.asPath === `/${username}` ? "white" : "current"}
+              />
+            </HStack>
           </Box>
-        </Layout>
+        </HStack>
       )}
     </>
   );

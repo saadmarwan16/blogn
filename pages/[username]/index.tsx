@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { GetServerSideProps, NextPage } from "next";
+import Layout from "../../components/Layout";
 import Metatags from "../../components/Metatags";
 import PostFeed from "../../components/PostFeed";
 import UserProfile from "../../components/UserProfile";
@@ -28,13 +29,10 @@ const UserProfilePage: NextPage<Props> = ({ user, posts }) => {
   return (
     <>
       <Metatags title={user?.displayName!} />
-      <main>
+      <Layout>
         <UserProfile user={user} />
         <PostFeed posts={posts} />
-        <Button colorScheme="secondary" onClick={() => signOut()}>
-          Logout
-        </Button>
-      </main>
+      </Layout>
     </>
   );
 };

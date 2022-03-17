@@ -1,4 +1,4 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Button, Heading, Text } from "@chakra-ui/react";
 import {
   collectionGroup,
   getDocs,
@@ -16,6 +16,7 @@ import Metatags from "../components/Metatags";
 import PostFeed from "../components/PostFeed";
 import Profiles from "../components/Profiles";
 import { firestore, fromMillis, postToJson } from "../lib/firebase";
+import { useHeadingSize } from "../lib/hooks/breakpointSizes";
 import { IPost } from "../lib/interfaces";
 
 const LIMIT = 1;
@@ -27,6 +28,7 @@ const Home: NextPage<Props> = (props) => {
   const [posts, setPosts] = useState(props.posts);
   const [loading, setLoading] = useState<boolean>(false);
   const [postsEnd, setPostsEnd] = useState<boolean>(false);
+  const headingSize = useHeadingSize();
 
   const getMorePosts = async () => {
     setLoading(true);
@@ -55,19 +57,25 @@ const Home: NextPage<Props> = (props) => {
       <Metatags title="Home" />
       <Layout>
         <Box as="main" mt={{ base: 4, sm: 8 }}>
-          <Heading mb={{ base: 3, md: 6 }}>
+          <Heading mb={{ base: 3, md: 6 }} size={headingSize}>
             Let&apos;s explore today&apos;s
           </Heading>
           <Profiles />
           <PostFeed posts={posts} />
 
           {!loading && !postsEnd && (
-            <button onClick={getMorePosts}>Load more</button>
+            <Button onClick={getMorePosts} colorScheme="secondary" mt={12}>
+              Load more
+            </Button>
           )}
 
           <Loader show={loading} />
 
-          {postsEnd && "You have reached the end!"}
+          {postsEnd && (
+            <Text mt={12} fontSize={{ base: "xl", sm: "2xl", md: "3xl" }}>
+              You have reached the end!
+            </Text>
+          )}
         </Box>
       </Layout>
     </>

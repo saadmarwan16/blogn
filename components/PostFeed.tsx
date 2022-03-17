@@ -9,6 +9,8 @@ import {
   SimpleGrid,
   GridItem,
   useBreakpointValue,
+  Button,
+  Show,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -43,7 +45,7 @@ interface PostItemProps {
 const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
-  const colSpan = useBreakpointValue({base: 2, lg: 1})
+  const colSpan = useBreakpointValue({ base: 2, lg: 1 });
 
   return (
     <GridItem colSpan={colSpan}>
@@ -56,7 +58,76 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
             p={{ base: 2, md: 3, lg: 2 }}
             _hover={{ borderColor: "primary.800" }}
           >
-            <Flex
+            <HStack alignItems="start">
+              <Avatar src="/person.png" borderRadius="xl" />
+              <VStack alignItems="start" gap={3} w="full" pl={2}>
+                <VStack alignItems="start">
+                  <HStack>
+                    <Text>Marwan Sa-ad</Text>
+                    <Text color="primary.700" fontSize="sm" ml="0px !important">
+                      @Marisky
+                    </Text>
+                  </HStack>
+                  <Text fontSize="sm" lineHeight="0">
+                    Mar 16 {post.createdAt}
+                  </Text>
+                </VStack>
+                <VStack alignItems="start" mt="16px !important">
+                  <Heading as="h6" size="md" noOfLines={2}>
+                    {post.title}
+                    Title fajfkajkfjka fjkajfkajkfa jfakjfkajkfja jakjfkajfk
+                    afjkajfkaj fjkajfkaj fjkajfkasnvka fkjajfkajkfja kfjkajfkajf
+                    ajfkajkfj fjakfjak kjfkajfka kfjakjfa
+                  </Heading>
+                  <Text noOfLines={2}>
+                    {post.content}
+                    Content fajfhjahfjbvjha ffjfiejkaf ak jfaufie fjfaief
+                    fajfjaif fjfia fajfafjie fjaiff fjie fijfaf iaejf fifjaf
+                    Title fajfkajkfjka fjkajfkajkfa jfakjfkajkfja jakjfkajfk
+                    afjkajfkaj fjkajfkaj fjkajfkasnvka fkjajfkajkfja kfjkajfkajf
+                    ajfkajkfj fjakfjak kjfkajfka kfjakjfa{" "}
+                  </Text>
+                </VStack>
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="start"
+                  w="full"
+                  mt="0px !important"
+                >
+                  <Button
+                    variant="ghost"
+                    colorScheme="primary"
+                    _hover={{ background: "gray.300" }}
+                    px={1}
+                  >
+                    💗 {post.heartCount}<Show above="sm"> hearts</Show>
+                  </Button>
+                  <HStack>
+                    <Show above="sm">
+                      <Text>{minutesToRead}min read</Text>
+                    </Show>
+                    <Button
+                      variant="ghost"
+                      colorScheme="primary"
+                      _hover={{ background: "gray.300" }}
+                    >
+                      Save
+                    </Button>
+                  </HStack>
+                </HStack>
+              </VStack>
+            </HStack>
+          </Box>
+        </a>
+      </Link>
+    </GridItem>
+  );
+};
+
+export default PostFeed;
+
+{
+  /* <Flex
               alignItems="center"
               flexDirection={{ base: "column", sm: "row" }}
               gap={4}
@@ -91,15 +162,8 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
                     </Heading>
                     <Text lineHeight={0.75} fontSize='xs'>{wordCount} words. July 14, 2021</Text>
                   </VStack>
-                  {/* <Box>💗 145</Box> */}
-                </HStack>
-              </VStack>
-            </Flex>
-          </Box>
-        </a>
-      </Link>
-    </GridItem>
-  );
-};
-
-export default PostFeed;
+                  {/* <Box>💗 145</Box> */
+}
+//     </HStack>
+//   </VStack>
+// </Flex> */}
