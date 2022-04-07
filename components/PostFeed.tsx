@@ -15,6 +15,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { FunctionComponent } from "react";
+import { getDateTime } from "../lib/firebase";
 import { IPost } from "../lib/interfaces";
 
 interface PostFeedProps {
@@ -46,6 +47,10 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
   const colSpan = useBreakpointValue({ base: 2, lg: 1 });
+  const { date, time } = getDateTime(
+    post.createdAt.seconds,
+    post.createdAt.nanoseconds
+  );
 
   return (
     <GridItem colSpan={colSpan}>
@@ -63,30 +68,24 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
               <VStack alignItems="start" gap={3} w="full" pl={2}>
                 <VStack alignItems="start">
                   <HStack>
-                    <Text>Marwan Sa-ad</Text>
+                    <Text>
+                      Marwan Sa-ad
+                      {/* {post.userDisplayName} */}
+                    </Text>
                     <Text color="primary.700" fontSize="sm" ml="0px !important">
-                      @Marisky
+                      @{post.username}
                     </Text>
                   </HStack>
                   <Text fontSize="sm" lineHeight="0">
-                    Mar 16 {post.createdAt}
+                    {/* Mar 16 {post.createdAt} */}
+                    {date} {time}
                   </Text>
                 </VStack>
                 <VStack alignItems="start" mt="16px !important">
                   <Heading as="h6" size="md" noOfLines={2}>
                     {post.title}
-                    Title fajfkajkfjka fjkajfkajkfa jfakjfkajkfja jakjfkajfk
-                    afjkajfkaj fjkajfkaj fjkajfkasnvka fkjajfkajkfja kfjkajfkajf
-                    ajfkajkfj fjakfjak kjfkajfka kfjakjfa
                   </Heading>
-                  <Text noOfLines={2}>
-                    {post.content}
-                    Content fajfhjahfjbvjha ffjfiejkaf ak jfaufie fjfaief
-                    fajfjaif fjfia fajfafjie fjaiff fjie fijfaf iaejf fifjaf
-                    Title fajfkajkfjka fjkajfkajkfa jfakjfkajkfja jakjfkajfk
-                    afjkajfkaj fjkajfkaj fjkajfkasnvka fkjajfkajkfja kfjkajfkajf
-                    ajfkajkfj fjakfjak kjfkajfka kfjakjfa{" "}
-                  </Text>
+                  <Text noOfLines={2}>{post.content}</Text>
                 </VStack>
                 <HStack
                   justifyContent="space-between"
@@ -100,7 +99,8 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
                     _hover={{ background: "gray.300" }}
                     px={1}
                   >
-                    💗 {post.heartCount}<Show above="sm"> hearts</Show>
+                    💗 {post.heartCount}
+                    <Show above="sm"> hearts</Show>
                   </Button>
                   <HStack>
                     <Show above="sm">

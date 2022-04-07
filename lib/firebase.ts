@@ -11,7 +11,7 @@ import {
   Timestamp,
   DocumentSnapshot,
   serverTimestamp as firebaseServerTimestamp,
-  increment as firebaseIncrement
+  increment as firebaseIncrement,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { IFirestorePost, IPost } from "./interfaces";
@@ -44,11 +44,24 @@ export const postToJson = (doc: DocumentSnapshot<DocumentData>): IPost => {
 
   return {
     ...data,
+    id: doc.id,
     createdAt: data.createdAt.toMillis(),
     updatedAt: data.updatedAt.toMillis(),
   };
 };
 
+export const getDateTime = (seconds: number, nanoseconds: number) => {
+  const timestamp = new Timestamp(seconds, nanoseconds);
+  const dateTime = new Date(timestamp.toMillis());
+
+  const time = dateTime.toTimeString().split(" ");
+
+  return {
+    date: dateTime.toDateString(),
+    time: time[0],
+  };
+};
+
 export const fromMillis = Timestamp.fromMillis;
 export const serverTimestamp = firebaseServerTimestamp;
-export const increment = firebaseIncrement
+export const increment = firebaseIncrement;

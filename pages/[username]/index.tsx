@@ -1,4 +1,3 @@
-import { Button } from "@chakra-ui/react";
 import {
   collection,
   where,
@@ -6,31 +5,34 @@ import {
   limit,
   orderBy,
   getDocs,
+  QueryDocumentSnapshot,
 } from "firebase/firestore";
-import { getDownloadURL, ref } from "firebase/storage";
 import { GetServerSideProps, NextPage } from "next";
 import Layout from "../../components/Layout";
 import Metatags from "../../components/Metatags";
 import PostFeed from "../../components/PostFeed";
 import UserProfile from "../../components/UserProfile";
-import { useAuth } from "../../lib/contexts/AuthContext";
-import { getUserWithUsername, postToJson, storage } from "../../lib/firebase";
-import { IPost } from "../../lib/interfaces";
-import { user, post } from "../../lib/types";
+import { getUserWithUsername, postToJson } from "../../lib/firebase";
+import { IPost, IUserDoc } from "../../lib/interfaces";
+import { user } from "../../lib/types";
 
 interface Props {
   user: user;
   posts: IPost[];
+  username: string;
+  userDoc: IUserDoc;
 }
 
-const UserProfilePage: NextPage<Props> = ({ user, posts }) => {
-  const { signOut } = useAuth();
-
+const UserProfilePage: NextPage<Props> = ({
+  user,
+  posts,
+  userDoc,
+}) => {
   return (
     <>
       <Metatags title={user?.displayName!} />
       <Layout>
-        <UserProfile user={user} />
+        <UserProfile user={user} userDoc={userDoc} />
         <PostFeed posts={posts} />
       </Layout>
     </>
@@ -63,7 +65,9 @@ const UserProfilePage: NextPage<Props> = ({ user, posts }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { username } = context.query;
-  const userDoc = await getUserWithUsername(username as string);
+  const userDoc = (await getUserWithUsername(
+    username as string
+  )) as QueryDocumentSnapshot<IUserDoc>;
 
   let user = null;
   let posts = null;
@@ -85,6 +89,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       user,
       posts,
+      username,
+      userDoc: userDoc.data(),
     },
   };
 };

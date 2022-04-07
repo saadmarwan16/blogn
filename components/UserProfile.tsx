@@ -9,14 +9,23 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { VscAdd } from "react-icons/vsc";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import { user } from "../lib/types";
+import { useAuth } from "../lib/contexts/AuthContext";
+import { IUserDoc } from "../lib/interfaces";
+import { MdLogout } from "react-icons/md";
 
 interface UserProfileProps {
   user: user;
+  userDoc: IUserDoc;
 }
 
-const UserProfile: FunctionComponent<UserProfileProps> = ({ user }) => {
+const UserProfile: FunctionComponent<UserProfileProps> = ({
+  user,
+  userDoc,
+}) => {
+  const { username: currentUsername, signOut } = useAuth();
+
   return (
     <>
       <Flex
@@ -28,10 +37,10 @@ const UserProfile: FunctionComponent<UserProfileProps> = ({ user }) => {
         <Avatar src={user?.photoURL ?? "/person.png"} size="xl" />
         <VStack lineHeight="0.85" alignItems={{ base: "center", sm: "start" }}>
           <Text color="primary.700" lineHeight="inherit">
-            @marisky
+            @{userDoc.username}
           </Text>
           <Text fontSize="xl" fontWeight="bold">
-            Marwan Sa-ad
+            {userDoc.displayName}
           </Text>
           <Text fontSize="sm">Joined on Mar 16, 2021</Text>
         </VStack>
@@ -57,12 +66,22 @@ const UserProfile: FunctionComponent<UserProfileProps> = ({ user }) => {
             </VStack>
           </Button>
         </ButtonGroup>
-        <Button
-          colorScheme="secondary"
-          leftIcon={<Icon as={VscAdd} fontSize={20} w="full" />}
-        >
-          Follow
-        </Button>
+        {userDoc.username === currentUsername ? (
+          <Button
+            colorScheme="secondary"
+            leftIcon={<Icon as={MdLogout} fontSize={20} w="full" />}
+            onClick={() => signOut()}
+          >
+            Logout
+          </Button>
+        ) : (
+          <Button
+            colorScheme="secondary"
+            leftIcon={<Icon as={VscAdd} fontSize={20} w="full" />}
+          >
+            Follow
+          </Button>
+        )}
       </VStack>
     </>
     // <div className="box-center">

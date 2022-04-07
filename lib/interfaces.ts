@@ -21,12 +21,18 @@ export interface IPost {
   userImageUrl: string;
   userDisplayName: string;
   content: string;
-  createdAt: number;
+  createdAt: any;
   heartCount: number;
   published: boolean;
   slug: string;
   title: string;
   uid: string;
-  updatedAt: number;
+  updatedAt: any;
+  username: string;
+}
+
+export interface IUserDoc {
+  displayName: string;
+  photoUrl: string;
   username: string;
 }
