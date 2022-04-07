@@ -11,7 +11,7 @@ const Metatags: FunctionComponent<MetatagsProps> = ({ title }) => {
       <title>{title} | Blogn</title>
       <meta
         property="description"
-        content="Bringing content creaters and consumers together throughh blogs"
+        content="Bringing content creators and consumers together through blogs"
       />
     </Head>
   );
