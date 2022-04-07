@@ -5,7 +5,6 @@ import {
   limit,
   orderBy,
   query,
-  startAfter,
   where,
 } from "firebase/firestore";
 import type { GetServerSideProps, NextPage } from "next";
@@ -15,11 +14,10 @@ import Loader from "../components/Loader";
 import Metatags from "../components/Metatags";
 import PostFeed from "../components/PostFeed";
 import Profiles from "../components/Profiles";
-import { firestore, fromMillis, postToJson } from "../lib/firebase";
+import { firestore, LIMIT, postToJson } from "../lib/firebase";
 import { useHeadingSize } from "../lib/hooks/breakpointSizes";
 import { IPost } from "../lib/interfaces";
-
-const LIMIT = 1;
+import firebaseGetMorePosts from "../lib/utils/firebaseGetMorePosts";
 
 interface Props {
   posts: IPost[];
@@ -33,16 +31,8 @@ const Home: NextPage<Props> = (props) => {
   const getMorePosts = async () => {
     setLoading(true);
     const last = posts[posts.length - 1];
-    const newPostsSnapshot = await getDocs(
-      query(
-        collectionGroup(firestore, "posts"),
-        where("published", "==", true),
-        orderBy("createdAt", "desc"),
-        startAfter(fromMillis(last.createdAt)),
-        limit(LIMIT)
-      )
-    );
-    const newPosts = newPostsSnapshot.docs.map(postToJson);
+
+    const newPosts = await firebaseGetMorePosts(last);
 
     setPosts(posts.concat(newPosts));
     setLoading(false);

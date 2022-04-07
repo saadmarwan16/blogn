@@ -8,7 +8,6 @@ import {
   useState,
 } from "react";
 import {
-  AuthStateHook,
   EmailAndPasswordActionHook,
   SendEmailVerificationHook,
   SignInWithPopupHook,
@@ -19,11 +18,11 @@ import {
   useSignInWithGoogle,
 } from "react-firebase-hooks/auth";
 import { auth, firestore } from "../firebase";
-import { user as userType, username as usernameType } from "../types";
+import { TUser, TUsername } from "../types";
 
 interface IAuthContext {
-  user: userType;
-  username: usernameType;
+  user: TUser;
+  username: TUsername;
   registerWithEmailAndPassword: EmailAndPasswordActionHook;
   loginWithEmailAndPassword: EmailAndPasswordActionHook;
   loginWithGoogle: SignInWithPopupHook;
@@ -37,7 +36,7 @@ export const useAuth = () => useContext(AuthContext)!;
 
 const AuthContextProvider: FunctionComponent = ({ children }) => {
   const [user] = useAuthState(auth);
-  const [username, setUsername] = useState<usernameType>(null);
+  const [username, setUsername] = useState<TUsername>(null);
 
   useEffect(() => {
     let unsubscribe;

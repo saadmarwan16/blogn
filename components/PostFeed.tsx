@@ -5,17 +5,16 @@ import {
   Text,
   HStack,
   Heading,
-  Flex,
   SimpleGrid,
   GridItem,
   useBreakpointValue,
   Button,
   Show,
 } from "@chakra-ui/react";
-import Image from "next/image";
 import Link from "next/link";
 import { FunctionComponent } from "react";
 import { getDateTime } from "../lib/firebase";
+import { useHeadingSize } from "../lib/hooks/breakpointSizes";
 import { IPost } from "../lib/interfaces";
 
 interface PostFeedProps {
@@ -27,14 +26,21 @@ const PostFeed: FunctionComponent<PostFeedProps> = ({
   posts,
   admin = false,
 }) => {
+  const headingSize = useHeadingSize();
+
   return (
-    <SimpleGrid columns={2} columnGap={6} rowGap={4}>
-      {posts
-        ? posts.map((post) => (
-            <PostItem post={post} key={post.slug} admin={admin} />
-          ))
-        : null}
-    </SimpleGrid>
+    <>
+      <Heading mb={{ base: 3, md: 6 }} size={headingSize}>
+        Posts
+      </Heading>
+      <SimpleGrid columns={2} columnGap={6} rowGap={4}>
+        {posts
+          ? posts.map((post) => (
+              <PostItem post={post} key={post.slug} admin={admin} />
+            ))
+          : null}
+      </SimpleGrid>
+    </>
   );
 };
 

@@ -2,48 +2,71 @@ import { NextPage } from "next";
 import AuthCheck from "../../components/AuthCheck";
 import styles from "../../styles/Admin.module.css";
 import PostFeed from "../../components/PostFeed";
-import { UserContext } from "../../lib/context";
 import { firestore, auth, serverTimestamp } from "../../lib/firebase";
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
 import { useCollection } from "react-firebase-hooks/firestore";
 import kebabCase from "lodash.kebabcase";
 import toast from "react-hot-toast";
-import { collection, doc, orderBy, query, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  orderBy,
+  Query,
+  query,
+  setDoc,
+} from "firebase/firestore";
 import { IPost } from "../../lib/interfaces";
 import Metatags from "../../components/Metatags";
+import { useAuth } from "../../lib/contexts/AuthContext";
 
 const AdminPage: NextPage = () => {
   return (
-    <main>
-      <AuthCheck>
-        <PostList />
-        <CreateNewPost />
-      </AuthCheck>
-    </main>
+    <>
+      <Metatags title="Admin" />
+      <main>
+        <AuthCheck>
+          <PostList />
+          <CreateNewPost />
+        </AuthCheck>
+      </main>
+    </>
   );
 };
 
 const PostList = () => {
-  const userRef = doc(firestore, "users", auth.currentUser?.uid!);
-  const q = query(collection(userRef, "posts"), orderBy("createdAt"));
-  const [querySnapshot] = useCollection(q);
+  const { user } = useAuth();
+  const userRef = doc(firestore, `user/${user?.uid}`);
+  const q = query(
+    collection(userRef, "posts"),
+    orderBy("createdAt")
+  ) as Query<IPost>;
+  const [querySnapshot, loading, error] = useCollection(q);
 
-  const posts = querySnapshot?.docs.map((doc) => doc.data() as IPost)!;
+  if (loading) return <div>Loading...</div>;
+
+  if (error) return <div>Error...</div>;
+
+  const posts = querySnapshot?.docs.map((doc) => doc.data())!;
+
+  console.log(posts);
 
   return (
     <>
-      <Metatags title="Admin" />
-      <h1>Manage your Posts</h1>
-      <PostFeed posts={posts} admin />
+      {querySnapshot && (
+        <>
+          <h1>Manage your Posts</h1>
+          <PostFeed posts={posts} admin />
+        </>
+      )}
     </>
   );
 };
 
 const CreateNewPost = () => {
   const router = useRouter();
-  const { username } = useContext(UserContext);
   const [title, setTitle] = useState("");
+  const { username } = useAuth();
 
   const slug = encodeURI(kebabCase(title));
   const isValid = title.length > 3 && title.length < 100;

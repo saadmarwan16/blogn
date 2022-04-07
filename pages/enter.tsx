@@ -10,13 +10,13 @@ import {
 } from "react";
 import { auth, authProvider, firestore } from "../lib/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
-import { UserContext } from "../lib/context";
 import { getDoc, doc, writeBatch } from "firebase/firestore";
 import debounce from "lodash.debounce";
 import Metatags from "../components/Metatags";
+import { useAuth } from "../lib/contexts/AuthContext";
 
 const EnterPage: NextPage = () => {
-  const { user, username } = useContext(UserContext);
+  const { user, username } = useAuth();
 
   return (
     <main>
@@ -55,7 +55,7 @@ const UsernameForm: FunctionComponent = () => {
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { user, username } = useContext(UserContext);
+  const { user, username } = useAuth();
 
   const checkUsername = useMemo(
     () =>

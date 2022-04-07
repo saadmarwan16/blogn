@@ -15,7 +15,9 @@ import {
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { IFirestorePost, IPost } from "./interfaces";
-import { username } from "./types";
+import { TUsername } from "./types";
+
+export const LIMIT = 1;
 
 const firebaseConfig = {
   apiKey: "AIzaSyCaeRK5mr_jBQUayRH8MIP8loutMOr5NWU",
@@ -32,7 +34,7 @@ export const authProvider = new GoogleAuthProvider();
 export const firestore = getFirestore(app);
 export const storage = getStorage(app);
 
-export const getUserWithUsername = async (username: username) => {
+export const getUserWithUsername = async (username: TUsername) => {
   const usersRef = collection(firestore, "users");
   const q = query(usersRef, where("username", "==", username), limit(1));
   const userDoc = (await getDocs(q)).docs[0];

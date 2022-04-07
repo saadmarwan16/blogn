@@ -8,9 +8,8 @@ import { IFirestorePost, IPost } from "../../lib/interfaces";
 import AuthCheck from "../../components/AuthCheck";
 import Link from "next/link";
 import HeartButton from "../../components/HeartButton";
-import { useContext } from "react";
-import { UserContext } from "../../lib/context";
 import Metatags from "../../components/Metatags";
+import { useAuth } from "../../lib/contexts/AuthContext";
 
 interface PageProps {
   post: IPost;
@@ -20,13 +19,13 @@ interface PageProps {
 const PostPage: NextPage<PageProps> = (props) => {
   const postRef = doc(firestore, props.path!);
   const [realtimePost] = useDocumentData(postRef);
-  const { user: currentUser } = useContext(UserContext);
+  const {user} = useAuth();
 
   const post = (realtimePost || props.post) as IPost;
 
   return (
     <>
-      <Metatags title={currentUser?.displayName!} />
+      <Metatags title={user?.displayName!} />
       <main className={styles.container}>
         <section>
           <PostContent post={post} />
@@ -47,7 +46,7 @@ const PostPage: NextPage<PageProps> = (props) => {
           >
             <HeartButton postRef={postRef} />
           </AuthCheck>
-          {currentUser?.uid === post.uid && (
+          {user?.uid === post.uid && (
             <Link href={`/admin/${post.slug}`}>
               <a>
                 <button className="btn-blue">Edit Post</button>

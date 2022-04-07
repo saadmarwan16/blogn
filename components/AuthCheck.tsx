@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { FunctionComponent, useContext } from "react";
-import { UserContext } from "../lib/context";
+import { FunctionComponent } from "react";
+import { useAuth } from "../lib/contexts/AuthContext";
 
 interface AuthCheckProps {
   fallback?: any;
 }
 
 const AuthCheck: FunctionComponent<AuthCheckProps> = (props) => {
-  const { username } = useContext(UserContext);
+  const { username } = useAuth();
 
   return username
     ? props.children

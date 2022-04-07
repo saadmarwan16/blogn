@@ -10,13 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { VscAdd } from "react-icons/vsc";
 import { FunctionComponent, useContext } from "react";
-import { user } from "../lib/types";
+import { TUser } from "../lib/types";
 import { useAuth } from "../lib/contexts/AuthContext";
 import { IUserDoc } from "../lib/interfaces";
 import { MdLogout } from "react-icons/md";
 
 interface UserProfileProps {
-  user: user;
+  user: TUser;
   userDoc: IUserDoc;
 }
 
@@ -36,7 +36,7 @@ const UserProfile: FunctionComponent<UserProfileProps> = ({
       >
         <Avatar src={user?.photoURL ?? "/person.png"} size="xl" />
         <VStack lineHeight="0.85" alignItems={{ base: "center", sm: "start" }}>
-          <Text color="primary.700" lineHeight="inherit">
+          <Text color="primary.700" fontStyle="italic" lineHeight="inherit">
             @{userDoc.username}
           </Text>
           <Text fontSize="xl" fontWeight="bold">
@@ -84,17 +84,6 @@ const UserProfile: FunctionComponent<UserProfileProps> = ({
         )}
       </VStack>
     </>
-    // <div className="box-center">
-    //   <img
-    //     alt="profile"
-    //     src={ user?.photoURL ?? "/person.png"}
-    //     className="card-img-center"
-    //   />
-    //   <p>
-    //     <i>@{user?.username}</i>
-    //   </p>
-    //   <h1>{user?.displayName}</h1>
-    // </div>
   );
 };
 

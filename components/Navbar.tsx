@@ -44,9 +44,19 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
                 w={iconSize}
                 h={iconSize}
                 cursor="pointer"
+                onClick={() => router.push("/admin/new-post")}
+                color={
+                  router.asPath === "/admin/new-post" ? "white" : "current"
+                }
+              />
+              {/* <Icon
+                as={VscAdd}
+                w={iconSize}
+                h={iconSize}
+                cursor="pointer"
                 onClick={() => router.push("/admin")}
                 color={router.asPath === "/admin" ? "white" : "current"}
-              />
+              /> */}
               <Icon
                 as={BsFillBookmarkFill}
                 w={iconSize}

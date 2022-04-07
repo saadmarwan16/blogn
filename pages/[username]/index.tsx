@@ -1,3 +1,4 @@
+import { Button } from "@chakra-ui/react";
 import {
   collection,
   where,
@@ -8,32 +9,54 @@ import {
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { GetServerSideProps, NextPage } from "next";
+import { useState } from "react";
 import Layout from "../../components/Layout";
 import Metatags from "../../components/Metatags";
 import PostFeed from "../../components/PostFeed";
 import UserProfile from "../../components/UserProfile";
-import { getUserWithUsername, postToJson } from "../../lib/firebase";
+import { getUserWithUsername, LIMIT, postToJson } from "../../lib/firebase";
 import { IPost, IUserDoc } from "../../lib/interfaces";
-import { user } from "../../lib/types";
+import { TUser } from "../../lib/types";
+import firebaseGetMorePosts from "../../lib/utils/firebaseGetMorePosts";
 
 interface Props {
-  user: user;
-  posts: IPost[];
+  user: TUser;
+  currentPosts: IPost[];
   username: string;
   userDoc: IUserDoc;
 }
 
-const UserProfilePage: NextPage<Props> = ({
-  user,
-  posts,
-  userDoc,
-}) => {
+const UserProfilePage: NextPage<Props> = ({ user, currentPosts, userDoc }) => {
+  const [posts, setPosts] = useState(currentPosts);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [postsEnd, setPostsEnd] = useState<boolean>(false);
+
+  const getMorePosts = async () => {
+    setLoading(true);
+    const last = posts[posts.length - 1];
+
+    const newPosts = await firebaseGetMorePosts(last);
+
+    setPosts(posts.concat(newPosts));
+    setLoading(false);
+
+    if (newPosts.length < LIMIT) {
+      setPostsEnd(true);
+    }
+  };
+
   return (
     <>
       <Metatags title={user?.displayName!} />
       <Layout>
         <UserProfile user={user} userDoc={userDoc} />
         <PostFeed posts={posts} />
+
+        {!loading && !postsEnd && (
+          <Button onClick={getMorePosts} colorScheme="secondary" mt={12}>
+            Load more
+          </Button>
+        )}
       </Layout>
     </>
   );
@@ -88,7 +111,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       user,
-      posts,
+      currentPosts: posts,
       username,
       userDoc: userDoc.data(),
     },
