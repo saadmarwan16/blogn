@@ -4,6 +4,9 @@ import {
   FormLabel,
   Heading,
   Input,
+  Checkbox,
+  Button,
+  Stack,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -16,7 +19,7 @@ interface IPostInput {
   // id: string;
   title: string;
   content: string;
-  heartCount: number;
+  // heartCount: number;
   published: boolean;
   // imageUrl: string;
 }
@@ -43,7 +46,11 @@ const NewPost: NextPage<NewPostProps> = () => {
   // updatedAt: any;
   // username: string;
 
-  const formSubmitHandler: SubmitHandler<IPostInput> = (data: IPostInput) => {};
+  const formSubmitHandler: SubmitHandler<IPostInput> = (data: IPostInput) => {
+    console.log(data.title);
+    console.log(data.content);
+    console.log(data.published);
+  };
 
   return (
     <Layout>
@@ -52,18 +59,46 @@ const NewPost: NextPage<NewPostProps> = () => {
       </Heading>
 
       <form onSubmit={handleSubmit(formSubmitHandler)}>
-        <FormControl isInvalid={!!errors.title}>
-          <FormLabel htmlFor="Enter password again">Title</FormLabel>
-          <Input
-            placeholder="Enter post title"
-            {...register("title")}
-            type="text"
-            borderColor="gray.300"
-            focusBorderColor="primary.500"
-            variant="filled"
-          />
-          <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
-        </FormControl>
+        <Stack gap={4}>
+          <FormControl isInvalid={!!errors.title}>
+            <FormLabel htmlFor="Enter post title">Title</FormLabel>
+            <Input
+              placeholder="Enter post title"
+              {...register("title", {
+                maxLength: { value: 160, message: "Title is too long" },
+                minLength: { value: 3, message: "Title is too short" },
+                required: { value: true, message: "Title is required" },
+              })}
+              type="text"
+              borderColor="gray.300"
+              focusBorderColor="primary.500"
+              variant="filled"
+            />
+            <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={!!errors.content}>
+            <FormLabel htmlFor="Enter post content">Content</FormLabel>
+            <Input
+              placeholder="Enter post content"
+              {...register("content", {
+                maxLength: { value: 20000, message: "Content is too long" },
+                minLength: { value: 10, message: "Content is too short" },
+                required: { value: true, message: "Content is required" },
+              })}
+              type="text"
+              borderColor="gray.300"
+              focusBorderColor="primary.500"
+              variant="filled"
+            />
+            <FormErrorMessage>{errors.content?.message}</FormErrorMessage>
+          </FormControl>
+          <Checkbox defaultChecked {...register("published")}>
+            Publish
+          </Checkbox>
+          <Button type="submit" variant="solid" colorScheme="secondary">
+            Create Post
+          </Button>
+        </Stack>
       </form>
     </Layout>
   );
