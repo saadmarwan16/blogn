@@ -3,6 +3,7 @@ import { useState } from "react";
 import { auth, storage } from "../lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Loader from "./Loader";
+import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 
 interface ImageUploaderProps {}
 
@@ -43,14 +44,24 @@ const ImageUploader: FunctionComponent<ImageUploaderProps> = () => {
 
       {!uploading && (
         <>
-          <label className="btn">
-            📸 Upload Img
-            <input
+        
+          <FormControl>
+            {/* <FormControl isInvalid={!!errors.content}> */}
+            <FormLabel htmlFor="Upload image">Upload Image</FormLabel>
+            <Input
+              placeholder="Upload image"
+              // {...register("imageUrl", {
+              //   required: { value: true, message: "Content is required" },
+              // })}
               type="file"
-              onChange={uploadFile}
               accept="image/x-png,image/gif,image/jpeg"
+              borderColor="gray.300"
+              focusBorderColor="primary.500"
+              variant="filled"
+              onChange={uploadFile}
             />
-          </label>
+            {/* <FormErrorMessage>{errors.content?.message}</FormErrorMessage> */}
+          </FormControl>
         </>
       )}
 

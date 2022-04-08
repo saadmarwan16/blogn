@@ -8,9 +8,15 @@ import {
   Button,
   Stack,
 } from "@chakra-ui/react";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { NextPage } from "next";
+import { ChangeEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import ImageUploader from "../../components/ImageUploader";
 import Layout from "../../components/Layout";
+import Loader from "../../components/Loader";
+import { useAuth } from "../../lib/contexts/AuthContext";
+import { storage } from "../../lib/firebase";
 import { useHeadingSize } from "../../lib/hooks/breakpointSizes";
 
 interface NewPostProps {}
@@ -20,17 +26,21 @@ interface IPostInput {
   title: string;
   content: string;
   // heartCount: number;
+  imageUrl: string;
   published: boolean;
-  // imageUrl: string;
 }
 
 const NewPost: NextPage<NewPostProps> = () => {
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [downloadURL, setDownloadURL] = useState<string | null>(null);
   const headingSize = useHeadingSize();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IPostInput>();
+  const { user } = useAuth();
 
   // id: string;
   // imageUrl: string;
@@ -47,9 +57,35 @@ const NewPost: NextPage<NewPostProps> = () => {
   // username: string;
 
   const formSubmitHandler: SubmitHandler<IPostInput> = (data: IPostInput) => {
-    console.log(data.title);
-    console.log(data.content);
-    console.log(data.published);
+    // console.log(data.title);
+    // console.log(data.content);
+    // console.log(data.published);
+    console.log(data.imageUrl);
+  };
+
+  const uploadFile = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = Array.from(e.target.files!)[0];
+    const extension = file.type.split("/")[1];
+
+    const imageRef = ref(
+      storage,
+      `uploads/${user?.uid!}/${Date.now()}.${extension}`
+    );
+    setUploading(true);
+
+    const uploadTask = uploadBytesResumable(imageRef, file);
+
+    uploadTask.on("state_changed", (snapshot) => {
+      const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      setProgress(pct);
+
+      uploadTask.then((_) =>
+        getDownloadURL(imageRef).then((url) => {
+          setDownloadURL(url);
+          setUploading(false);
+        })
+      );
+    });
   };
 
   return (
@@ -92,6 +128,25 @@ const NewPost: NextPage<NewPostProps> = () => {
             />
             <FormErrorMessage>{errors.content?.message}</FormErrorMessage>
           </FormControl>
+
+          <div className="box">
+            <Loader show={uploading} />
+            {uploading && <h3>{progress}%</h3>}
+
+            <FormControl>
+              <FormLabel htmlFor="Upload image">Upload Image</FormLabel>
+              <Input
+                placeholder="Upload image"
+                type="file"
+                accept="image/x-png,image/gif,image/jpeg"
+                borderColor="gray.300"
+                focusBorderColor="primary.500"
+                variant="filled"
+                onChange={uploadFile}
+              />
+            </FormControl>
+          </div>
+
           <Checkbox defaultChecked {...register("published")}>
             Publish
           </Checkbox>
