@@ -10,7 +10,6 @@ import {
 import type { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
 import Layout from "../components/Layout";
-import Loader from "../components/Loader";
 import Metatags from "../components/Metatags";
 import PostFeed from "../components/PostFeed";
 import Profiles from "../components/Profiles";
@@ -59,7 +58,9 @@ const Home: NextPage<Props> = (props) => {
             </Button>
           )}
 
-          <Loader show={loading} />
+          {loading && (
+            <div>Loading...</div>
+          )}
 
           {postsEnd && (
             <Text mt={12} fontSize={{ base: "xl", sm: "2xl", md: "3xl" }}>

@@ -4,7 +4,7 @@ import PostContent from "../../components/PostContent";
 import { firestore, getUserWithUsername, postToJson } from "../../lib/firebase";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { collectionGroup, doc, getDoc, getDocs } from "firebase/firestore";
-import { IFirestorePost, IPost } from "../../lib/interfaces";
+import { IPost } from "../../lib/interfaces";
 import AuthCheck from "../../components/AuthCheck";
 import Link from "next/link";
 import HeartButton from "../../components/HeartButton";
@@ -19,7 +19,7 @@ interface PageProps {
 const PostPage: NextPage<PageProps> = (props) => {
   const postRef = doc(firestore, props.path!);
   const [realtimePost] = useDocumentData(postRef);
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   const post = (realtimePost || props.post) as IPost;
 
@@ -47,7 +47,7 @@ const PostPage: NextPage<PageProps> = (props) => {
             <HeartButton postRef={postRef} />
           </AuthCheck>
           {user?.uid === post.uid && (
-            <Link href={`/admin/${post.slug}`}>
+            <Link href={`/admin/${post.id}`}>
               <a>
                 <button className="btn-blue">Edit Post</button>
               </a>
@@ -61,7 +61,7 @@ const PostPage: NextPage<PageProps> = (props) => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const username = params?.username as string;
-  const slug = params?.slug as string;
+  const id = params?.slug as string;
   const userDoc = await getUserWithUsername(username);
 
   let post;
@@ -70,10 +70,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (userDoc) {
     const postRef = doc(
       firestore,
-      "users",
-      "XbdhANUQxHUcuaJnSMYivrC9g3W2",
-      "posts",
-      "something"
+      `users/${userDoc.id}/posts/${id}`
     );
     const finalDoc = await getDoc(postRef);
     post = postToJson(finalDoc);
@@ -91,9 +88,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const snapshot = await getDocs(collectionGroup(firestore, "posts"));
 
   const paths = snapshot.docs.map((doc) => {
-    const { slug, username } = doc.data() as IFirestorePost;
+    const { id, username } = doc.data() as IPost;
     return {
-      params: { username, slug },
+      params: { username, slug: id },
     };
   });
 

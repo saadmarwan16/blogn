@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FunctionComponent } from "react";
 import ReactMarkdown from "react-markdown";
+import { getDateTime } from "../lib/firebase";
 import { IPost } from "../lib/interfaces";
 
 interface PostContentProps {
@@ -8,8 +9,8 @@ interface PostContentProps {
 }
 
 const PostContent: FunctionComponent<PostContentProps> = ({ post }) => {
-  const createdAt = new Date(post.createdAt);
-  console.log('created:', post.createdAt);
+  const { date, time } = getDateTime(post.createdAt);
+  // console.log("created:", post.createdAt);
 
   return (
     <div className="card">
@@ -19,7 +20,7 @@ const PostContent: FunctionComponent<PostContentProps> = ({ post }) => {
         <Link href={`/${post.username}/`}>
           <a className="text-info">@{post.username}</a>
         </Link>{" "}
-        on {createdAt.toDateString()}
+        on {date} {time}
       </span>
       <ReactMarkdown>{post?.content}</ReactMarkdown>
     </div>

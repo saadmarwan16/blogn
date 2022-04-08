@@ -14,7 +14,7 @@ import {
   increment as firebaseIncrement,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { IFirestorePost, IPost } from "./interfaces";
+import { IPost } from "./interfaces";
 import { TUsername } from "./types";
 
 export const LIMIT = 1;
@@ -42,19 +42,17 @@ export const getUserWithUsername = async (username: TUsername) => {
 };
 
 export const postToJson = (doc: DocumentSnapshot<DocumentData>): IPost => {
-  const data = doc.data() as IFirestorePost;
+  const data = doc.data() as IPost;
 
   return {
     ...data,
-    id: doc.id,
     createdAt: data.createdAt.toMillis(),
     updatedAt: data.updatedAt.toMillis(),
   };
 };
 
-export const getDateTime = (seconds: number, nanoseconds: number) => {
-  const timestamp = new Timestamp(seconds, nanoseconds);
-  const dateTime = new Date(timestamp.toMillis());
+export const getDateTime = (milliSeconds: number) => {
+  const dateTime = new Date(milliSeconds);
 
   const time = dateTime.toTimeString().split(" ");
 
