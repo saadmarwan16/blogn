@@ -10,6 +10,7 @@ import Link from "next/link";
 import HeartButton from "../../components/HeartButton";
 import Metatags from "../../components/Metatags";
 import { useAuth } from "../../lib/contexts/AuthContext";
+import capitalize from "../../lib/utils/capitalize";
 
 interface PageProps {
   post: IPost;
@@ -25,7 +26,7 @@ const PostPage: NextPage<PageProps> = (props) => {
 
   return (
     <>
-      <Metatags title={user?.displayName!} />
+      <Metatags title={capitalize(post.title)} />
       <main className={styles.container}>
         <section>
           <PostContent post={post} />

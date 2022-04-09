@@ -17,6 +17,7 @@ import UserProfile from "../../components/UserProfile";
 import { getUserWithUsername, LIMIT, postToJson } from "../../lib/firebase";
 import { IPost, IUserDoc } from "../../lib/interfaces";
 import { TUser } from "../../lib/types";
+import capitalize from "../../lib/utils/capitalize";
 import firebaseGetMorePosts from "../../lib/utils/firebaseGetMorePosts";
 
 interface Props {
@@ -47,7 +48,7 @@ const UserProfilePage: NextPage<Props> = ({ user, currentPosts, userDoc }) => {
 
   return (
     <>
-      <Metatags title={user?.displayName!} />
+      <Metatags title={capitalize(user?.displayName!)} />
       <Layout>
         <UserProfile user={user} userDoc={userDoc} />
         <PostFeed posts={posts} />

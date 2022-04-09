@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, FunctionComponent } from "react";
 import { useState } from "react";
 import { auth, storage } from "../lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import Loader from "./Loader";
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 
 interface ImageUploaderProps {}
@@ -39,12 +38,11 @@ const ImageUploader: FunctionComponent<ImageUploaderProps> = () => {
 
   return (
     <div className="box">
-      <Loader show={uploading} />
+      {uploading && <div>Loading...</div>}
       {uploading && <h3>{progress}%</h3>}
 
       {!uploading && (
         <>
-        
           <FormControl>
             {/* <FormControl isInvalid={!!errors.content}> */}
             <FormLabel htmlFor="Upload image">Upload Image</FormLabel>
