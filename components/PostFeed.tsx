@@ -11,11 +11,15 @@ import {
   Button,
   Show,
 } from "@chakra-ui/react";
+import { doc } from "firebase/firestore";
 import Link from "next/link";
 import { FunctionComponent } from "react";
-import { getDateTime } from "../lib/firebase";
+import { useAuth } from "../lib/contexts/AuthContext";
+import { firestore, getDateTime } from "../lib/firebase";
 import { useHeadingSize } from "../lib/hooks/breakpointSizes";
 import { IPost } from "../lib/interfaces";
+import { PostsHeart } from "./HeartButtons";
+import SaveButton from "./SaveButtons";
 
 interface PostFeedProps {
   posts: IPost[];
@@ -50,10 +54,12 @@ interface PostItemProps {
 }
 
 const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
+  const { user } = useAuth();
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
   const colSpan = useBreakpointValue({ base: 2, lg: 1 });
   const { date, time } = getDateTime(post.createdAt);
+  const postRef = doc(firestore, `users/${user?.uid}/posts/${post.id}`);
 
   return (
     <GridItem colSpan={colSpan}>
@@ -105,26 +111,12 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
               w="full"
               mt="0px !important"
             >
-              <Button
-                variant="ghost"
-                colorScheme="primary"
-                _hover={{ background: "gray.300" }}
-                px={1}
-              >
-                💗 {post.heartCount}
-                <Show above="sm"> hearts</Show>
-              </Button>
+              <PostsHeart heartCount={post.heartCount} postRef={postRef} />
               <HStack>
                 <Show above="sm">
                   <Text>{minutesToRead}min read</Text>
                 </Show>
-                <Button
-                  variant="ghost"
-                  colorScheme="primary"
-                  _hover={{ background: "gray.300" }}
-                >
-                  Save
-                </Button>
+                <SaveButton postRef={postRef} saveCount={4} />
               </HStack>
             </HStack>
           </VStack>
