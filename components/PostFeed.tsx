@@ -8,18 +8,17 @@ import {
   SimpleGrid,
   GridItem,
   useBreakpointValue,
-  Button,
   Show,
 } from "@chakra-ui/react";
-import { doc } from "firebase/firestore";
+import { collection, CollectionReference, doc } from "firebase/firestore";
 import Link from "next/link";
 import { FunctionComponent } from "react";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useAuth } from "../lib/contexts/AuthContext";
 import { firestore, getDateTime } from "../lib/firebase";
 import { useHeadingSize } from "../lib/hooks/breakpointSizes";
 import { IPost } from "../lib/interfaces";
-import { PostsHeart } from "./HeartButtons";
-import SaveButton from "./SaveButtons";
+import PostActionButtons from "./PostActionButtons";
 
 interface PostFeedProps {
   posts: IPost[];
@@ -27,10 +26,17 @@ interface PostFeedProps {
 }
 
 const PostFeed: FunctionComponent<PostFeedProps> = ({
-  posts,
+  posts: currentPosts,
   admin = false,
 }) => {
   const headingSize = useHeadingSize();
+  const { user } = useAuth();
+  const colRef = collection(
+    firestore,
+    `users/${user?.uid}/posts`
+  ) as CollectionReference<IPost>;
+  const [realtimePosts] = useCollectionData(colRef);
+  const posts = realtimePosts || currentPosts;
 
   return (
     <>
@@ -107,6 +113,23 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
             </Link>
             <HStack
               justifyContent="space-between"
+              alignItems="center"
+              w="full"
+              mt="0px !important"
+            >
+              <HStack alignItems="start" gap={4}>
+                <PostActionButtons
+                  post={post}
+                  postRef={postRef}
+                  isHorizontal={true}
+                />
+              </HStack>
+              <Show above="sm">
+                <Text>{minutesToRead}min read</Text>
+              </Show>
+            </HStack>
+            {/* <HStack
+              justifyContent="space-between"
               alignItems="start"
               w="full"
               mt="0px !important"
@@ -118,7 +141,7 @@ const PostItem: FunctionComponent<PostItemProps> = ({ post, admin }) => {
                 </Show>
                 <SaveButton postRef={postRef} saveCount={4} />
               </HStack>
-            </HStack>
+            </HStack> */}
           </VStack>
         </HStack>
       </Box>

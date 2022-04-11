@@ -6,6 +6,8 @@ export interface IPost {
   content: string;
   createdAt: any;
   heartCount: number;
+  saveCount: number;
+  saves: string[],
   published: boolean;
   title: string;
   uid: string;

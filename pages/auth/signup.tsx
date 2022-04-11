@@ -129,28 +129,18 @@ const SignUp: NextPage<SignUpProps> = () => {
   const formSubmitHandler: SubmitHandler<ISignUpInput> = (
     data: ISignUpInput
   ) => {
-    console.log(data.email);
-    console.log(data.password);
-    console.log(data.confirm);
     signUpWithEmailAndPassword(data.email, data.password)
       // .then((_) => {
       //   sendEmailVerificationFn()
       //     .then((_) => console.log("Resolved"))
       //     .catch((e) => console.log(e.message));
       // })
-      .catch((e) => {
-        console.log("error");
-        console.log(e.message);
-      });
+      .catch((e) => {});
   };
 
   const usernameFormSubmitHandler: SubmitHandler<ISignUpInput> = async (
     data: ISignUpInput
   ) => {
-    console.log(data.email);
-    console.log(data.password);
-    console.log(data.confirm);
-    console.log(data.username);
     const userDoc = doc(firestore, `users/${user?.uid}`);
     const usernameDoc = doc(firestore, `usernames/${data.username}`);
     const batch = writeBatch(firestore);

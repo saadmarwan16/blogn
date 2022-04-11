@@ -13,6 +13,7 @@ import Layout from "../components/Layout";
 import Metatags from "../components/Metatags";
 import PostFeed from "../components/PostFeed";
 import Profiles from "../components/Profiles";
+import { useAuth } from "../lib/contexts/AuthContext";
 import { firestore, LIMIT, postToJson } from "../lib/firebase";
 import { useHeadingSize } from "../lib/hooks/breakpointSizes";
 import { IPost } from "../lib/interfaces";
@@ -26,6 +27,7 @@ const Home: NextPage<Props> = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [postsEnd, setPostsEnd] = useState<boolean>(false);
   const headingSize = useHeadingSize();
+  const { user } = useAuth();
 
   const getMorePosts = async () => {
     setLoading(true);
@@ -40,6 +42,18 @@ const Home: NextPage<Props> = (props) => {
       setPostsEnd(true);
     }
   };
+
+  if (user) {
+    const colRef = collectionGroup(firestore, "posts");
+    const q = query(
+      colRef,
+      where("saves", "array-contains", user.uid),
+      orderBy("createdAt", "desc")
+    );
+    getDocs(q).then((data) => {
+      console.log(data.size);
+    });
+  }
 
   return (
     <>
@@ -58,9 +72,7 @@ const Home: NextPage<Props> = (props) => {
             </Button>
           )}
 
-          {loading && (
-            <div>Loading...</div>
-          )}
+          {loading && <div>Loading...</div>}
 
           {postsEnd && (
             <Text mt={12} fontSize={{ base: "xl", sm: "2xl", md: "3xl" }}>

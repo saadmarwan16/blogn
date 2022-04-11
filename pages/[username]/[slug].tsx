@@ -13,14 +13,7 @@ import Metatags from "../../components/Metatags";
 import { useAuth } from "../../lib/contexts/AuthContext";
 import capitalize from "../../lib/utils/capitalize";
 import Layout from "../../components/Layout";
-import {
-  Box,
-  HStack,
-  VStack,
-  Text,
-  Heading,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, HStack, VStack, Text, Heading, Flex, useBreakpointValue } from "@chakra-ui/react";
 import PostActionButtons from "../../components/PostActionButtons";
 import SinglePostAside from "../../components/SinglePostAside";
 import CustomImage from "../../components/CustomImage";
@@ -33,7 +26,8 @@ interface PageProps {
 const PostPage: NextPage<PageProps> = (props) => {
   const postRef = doc(firestore, props.path!);
   const [realtimePost] = useDocumentData(postRef);
-  const { user, username } = useAuth();
+  const { username } = useAuth();
+  const isHorizontal = useBreakpointValue({base: true, md: false})
 
   const { date, time } = getDateTime(props.post.createdAt);
 
@@ -112,8 +106,9 @@ const PostPage: NextPage<PageProps> = (props) => {
                     </Text>
                   </Flex>
                 </Box>
-
-                <PostActionButtons post={post} postRef={postRef} user={user} />
+                <Flex flexDir={{ base: "row", md: "column" }} mt={12} gap={6}>
+                  <PostActionButtons post={post} postRef={postRef} isHorizontal={isHorizontal!} />
+                </Flex>
               </Flex>
             </Box>
 

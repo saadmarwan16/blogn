@@ -88,6 +88,8 @@ const NewPost: NextPage<NewPostProps> = () => {
             userDisplayName: user?.displayName,
             createdAt: serverTimestamp(),
             heartCount: 0,
+            saveCount: 0,
+            saves: [],
             uid: user?.uid,
             username,
           }).then((docRef) => setPostId(docRef.id));

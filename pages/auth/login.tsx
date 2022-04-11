@@ -65,8 +65,6 @@ const Login: NextPage<LoginProps> = () => {
   } = useForm<ILoginInput>({ resolver: yupResolver(schema) });
 
   const formSubmitHandler: SubmitHandler<ILoginInput> = (data: ILoginInput) => {
-    // console.log(data.email);
-    // console.log(data.password);
     signInWithEmailAndPassword(data.email, data.password);
   };
 
